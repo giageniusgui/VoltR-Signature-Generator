@@ -53,19 +53,13 @@
   .f input[type=text],.f input[type=email],.f input[type=tel],.f input[type=url]{width:100%;border:1px solid #D3D3DD;border-radius:9px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .15s,box-shadow .15s}
   .f input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(132,10,255,.14)}
   .f input:disabled{background:var(--soft);color:#55556A}
-  .f input.bad{border-color:#E7A29F}
+  /* Field states: empty = grey, focused = violet, valid = green, invalid = orange (same as warnings) */
+  .f input.valid:not(:focus){border-color:var(--ok)}
+  .f input.invalid:not(:focus){border-color:var(--warn)}
   .hint{font-size:12.5px;color:var(--muted);min-height:17px}
   .hint.ok{color:var(--ok)} .hint.warn{color:var(--warn)} .hint.err{color:var(--err)}
+  .f input:focus ~ .hint{visibility:hidden}
   .divider{height:1px;background:var(--line);margin:20px 0}
-  .baseline-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .lock{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:#2A2A33;cursor:pointer;user-select:none}
-  .lock input{width:16px;height:16px;accent-color:var(--violet)}
-  .counter{font-variant-numeric:tabular-nums}
-  .host-status{margin-top:10px;padding:10px 12px;border-radius:9px;font-size:13px;display:none}
-  .host-status.show{display:block}
-  .host-status.warn{background:#FFF6E8;border:1px solid #F3D3A1;color:#6B3D00}
-  .host-status.ok{background:#EAF7F0;border:1px solid #BFE5CF;color:#0B5A35}
-  .host-status .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:6px}
 
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1px solid #D3D3DD;background:#fff;color:var(--ink);padding:10px 14px;font-weight:600;font-size:14px;cursor:pointer;transition:transform .08s,box-shadow .15s,background .15s;text-decoration:none;white-space:nowrap}
   .btn:hover{background:var(--soft)}
@@ -166,7 +160,7 @@
     <!-- ================= FORM ================= -->
     <section class="card" aria-labelledby="form-title">
       <h2 id="form-title">Vos informations</h2>
-      <p class="lead">La signature se construit en direct dans l'aperçu. Les champs vides ou invalides ne sont pas affichés.</p>
+      <p class="lead">La signature se construit en direct dans l'aperçu. Les champs vides ou invalides ne sont pas affichés, mais n'empêchent pas la génération de votre signature (pratique pour les boîtes génériques ou de service).</p>
 
       <form id="form" novalidate autocomplete="on">
         <div class="fields">
@@ -176,8 +170,8 @@
             <div class="hint" id="h-name"></div>
           </div>
           <div class="f">
-            <label for="title">Titre <span class="req">*</span></label>
-            <input type="text" id="title" name="title" maxlength="60" placeholder="Responsable marketing & communication" autocomplete="organization-title" required>
+            <label for="title">Titre <span class="opt">(facultatif)</span></label>
+            <input type="text" id="title" name="title" maxlength="60" placeholder="Responsable marketing & communication" autocomplete="organization-title">
             <div class="hint" id="h-title"></div>
           </div>
           <div class="f">
@@ -200,18 +194,6 @@
             <input type="url" id="rdv" name="rdv" maxlength="300" placeholder="https://calendar.notion.so/meet/…">
             <div class="hint" id="h-rdv"></div>
           </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="f full">
-          <div class="baseline-head">
-            <label for="baseline">Accroche du bloc VoltR</label>
-            <label class="lock"><input type="checkbox" id="lock" checked> Verrouiller l'accroche</label>
-          </div>
-          <input type="text" id="baseline" name="baseline" disabled>
-          <div class="hint" id="h-baseline"></div>
-          <div class="host-status" id="baseline-status" role="status"></div>
         </div>
 
         <button type="submit" class="btn primary big" id="generate">Générer vos signatures</button>
@@ -266,10 +248,6 @@
         <button type="button" class="btn small" id="asset-reset">Par défaut</button>
       </div>
       <div class="hint" id="asset-status"></div>
-      <div class="row">
-        <button type="button" class="btn small" id="dl-default-block">Télécharger le bloc par défaut (PNG)</button>
-        <button type="button" class="btn small" id="dl-icon">Télécharger l'icône LinkedIn (PNG)</button>
-      </div>
     </div>
   </details>
 
@@ -287,7 +265,6 @@
    ===================================================================== */
 var CFG = {
   DEFAULT_BASELINE: 'Batteries lithium françaises à impact positif',
-  BASELINE_MAX: 52,
   WEBSITE_URL: 'https://www.voltr.tech',
   WEBSITE_LABEL: 'www.voltr.tech',
   LINKEDIN_COMPANY: 'https://www.linkedin.com/company/voltr/home/',
@@ -297,7 +274,6 @@ var CFG = {
   // the images are taken from the "assets/" folder next to the page.
   FALLBACK_ASSET_BASE: 'https://giageniusgui.github.io/VoltR-Signature-Generator/assets/',
   BLOCK_FILE: 'signature-block.png',
-  CUSTOM_BLOCK_DIR: 'blocks/',
   ICON_FILE: 'linkedin.png',
   C: { ink:'#121212', title:'#0021D1', rule:'#9C9CA8', violet:'#840AFF', blue:'#0021D1', linkedin:'#0A66C2' },
   FONT_STD: "'Helvetica Neue',Helvetica,Arial,sans-serif",
@@ -330,11 +306,6 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 function clean(s){ return String(s||'').normalize('NFC').replace(/\s+/g,' ').trim(); }
 function store(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
 function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-function hash8(s){ // FNV-1a 32 bits
-  var h = 0x811c9dc5;
-  for (var i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
-  return ('0000000'+h.toString(16)).slice(-8);
-}
 function slug(s){ return clean(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'signature'; }
 
 /* ---------- Field normalisation / validation ---------- */
@@ -481,9 +452,7 @@ function detectAssetBase(){
 }
 var assetBase = detectAssetBase();
 function normBase(b){ b = clean(b); return b && !/\/$/.test(b) ? b+'/' : b; }
-function isDefaultBaseline(b){ return clean(b) === CFG.DEFAULT_BASELINE; }
-function blockFile(b){ return isDefaultBaseline(b) ? CFG.BLOCK_FILE : CFG.CUSTOM_BLOCK_DIR + 'b-' + hash8(clean(b)) + '.png'; }
-function blockUrl(b){ return assetBase + blockFile(b); }
+function blockUrl(){ return assetBase + CFG.BLOCK_FILE; }
 function iconUrl(){ return assetBase + CFG.ICON_FILE; }
 var probeCache = {};
 function probe(url){
@@ -500,7 +469,6 @@ function probe(url){
    SIGNATURE BUILDERS
    ===================================================================== */
 function readModel(){
-  var baseline = $('lock').checked ? CFG.DEFAULT_BASELINE : (clean($('baseline').value) || CFG.DEFAULT_BASELINE);
   return {
     name: clean($('name').value),
     title: clean($('title').value),
@@ -508,7 +476,7 @@ function readModel(){
     email: parseEmail($('email').value),
     linkedin: parseLinkedin($('linkedin').value),
     rdv: parseRdv($('rdv').value),
-    baseline: baseline
+    baseline: CFG.DEFAULT_BASELINE
   };
 }
 
@@ -523,7 +491,7 @@ function buildHtml(m, opts){
   var name = m.name, title = m.title, ph = {};
   if (P){
     if (!name){ name = 'Prénom Nom'; ph.name = true; }
-    if (!title){ title = 'Votre titre'; ph.title = true; }
+    if (!title && ph.name){ title = 'Votre titre'; ph.title = true; }
   }
   var alt = 'VoltR – ' + m.baseline;
   var baseText = 'font-family:'+F+';';
@@ -552,13 +520,13 @@ function buildHtml(m, opts){
   +   '<td width="'+L.gap+'" style="width:'+L.gap+'px;min-width:'+L.gap+'px;font-size:0;line-height:0;">&nbsp;</td>'
   +   '<td width="'+L.colW+'" valign="middle" style="width:'+L.colW+'px;padding:0;vertical-align:middle;">'
   +    '<table '+tbl+' width="'+L.colW+'" style="'+tStyle+'width:'+L.colW+'px;">'
-  +     '<tr><td style="padding:0 0 4px 0;'+baseText+'font-size:'+L.name+'px;line-height:'+L.nameLH+'px;font-weight:bold;color:'+C.ink+';"'+r('ink')+'>'
+  +     '<tr><td style="padding:0 0 '+(title ? '4px' : '11px')+' 0;'+(title ? '' : 'border-bottom:1px solid '+C.rule+';')+baseText+'font-size:'+L.name+'px;line-height:'+L.nameLH+'px;font-weight:bold;color:'+C.ink+';"'+r('ink')+'>'
   +       (P ? '<span'+k('name')+(ph.name?' class="ph"':'')+'>'+esc(name)+'</span>' : esc(name))
+  +       (P && !title ? '<span data-r="rule" style="display:none"></span>' : '')
   +     '</td></tr>'
-  +     '<tr><td style="padding:0 0 11px 0;border-bottom:1px solid '+C.rule+';'+baseText+'font-size:'+L.title+'px;line-height:'+L.titleLH+'px;color:'+C.title+';"'+r('title')+'>'
+  +     (title ? '<tr><td style="padding:0 0 11px 0;border-bottom:1px solid '+C.rule+';'+baseText+'font-size:'+L.title+'px;line-height:'+L.titleLH+'px;color:'+C.title+';"'+r('title')+'>'
   +       (P ? '<span'+k('title')+(ph.title?' class="ph"':'')+'>'+esc(title)+'</span>' : esc(title))
-  +       (P ? '<span data-r="rule" style="display:none"></span>' : '')
-  +     '</td></tr>'
+  +     '</td></tr>' : '')
   +     '<tr><td style="padding:11px 0 0 0;">'
   +      '<table '+tbl+' width="100%" style="'+tStyle+'width:100%;">'
   +       '<tr>'
@@ -578,7 +546,7 @@ function buildHtml(m, opts){
 }
 
 function buildText(m){
-  var out = [m.name, m.title, '', 'VoltR – ' + m.baseline];
+  var out = [m.name]; if (m.title) out.push(m.title); out.push('', 'VoltR – ' + m.baseline);
   if (m.phone.state==='ok') out.push(m.phone.display);
   if (m.email.state==='ok') out.push(m.email.display);
   out.push(CFG.WEBSITE_LABEL);
@@ -588,7 +556,7 @@ function buildText(m){
 }
 
 function variant(m, kind){
-  var img = blockUrl(m.baseline), icon = iconUrl();
+  var img = blockUrl(), icon = iconUrl();
   if (kind==='outlook') return buildHtml(m, {layout:CFG.DESKTOP, font:CFG.FONT_OUTLOOK, img:img, icon:icon});
   if (kind==='compact') return buildHtml(m, {layout:CFG.COMPACT, font:CFG.FONT_STD, img:img, icon:icon});
   return buildHtml(m, {layout:CFG.DESKTOP, font:CFG.FONT_STD, img:img, icon:icon});
@@ -637,47 +605,25 @@ window.addEventListener('resize', fitPreview);
 /* =====================================================================
    FORM FEEDBACK
    ===================================================================== */
-function hint(id, cls, text){ var h = $('h-'+id); h.className = 'hint' + (cls ? ' '+cls : ''); h.textContent = text || ''; $(id) && $(id).classList.toggle('bad', cls==='err'); }
+var touched = {}; // fields left at least once: the invalid state shows only after leaving the field
+function fieldState(id, st, msg){
+  var el = $(id), h = $('h-'+id);
+  var show = touched[id] || st==='missing';
+  el.classList.toggle('valid', st==='ok');
+  el.classList.toggle('invalid', show && (st==='bad' || st==='missing'));
+  h.className = 'hint' + (show && msg ? ' warn' : '');
+  h.textContent = show && msg ? msg : '';
+}
 
 function updateHints(showRequired){
   var m = readModel();
-  hint('name', !m.name && showRequired ? 'err' : '', !m.name && showRequired ? 'Champ obligatoire.' : '');
-  hint('title', !m.title && showRequired ? 'err' : '', !m.title && showRequired ? 'Champ obligatoire.' : '');
-  hint('phone', m.phone.state==='bad' ? 'warn' : m.phone.state==='ok' ? 'ok' : '',
-    m.phone.state==='bad' ? 'Numéro non reconnu : il ne sera pas affiché.' : m.phone.state==='ok' ? 'Affiché : ' + m.phone.display : '');
-  hint('email', m.email.state==='bad' ? 'warn' : '', m.email.state==='bad' ? 'Adresse invalide : elle ne sera pas affichée.' : '');
-  hint('linkedin', m.linkedin.state==='ok' ? 'ok' : m.linkedin.state==='bad' ? 'warn' : '',
-    m.linkedin.state==='ok' ? 'Lien vers votre profil.' :
-    m.linkedin.state==='bad' ? 'Profil non reconnu (format linkedin.com/in/…) : l\'icône mènera à la page VoltR.' :
-    'Vide : l\'icône mènera à la page LinkedIn de VoltR.');
-  hint('rdv', m.rdv.state==='bad' ? 'warn' : '', m.rdv.state==='bad' ? 'Lien invalide : « Prendre rendez-vous » ne sera pas affiché.' : m.rdv.state==='empty' ? 'Vide : la ligne « Prendre rendez-vous » est masquée.' : '');
-  var b = $('baseline').value.length;
-  hint('baseline', '', $('lock').checked ? 'Accroche officielle (verrouillée).' : b + ' / ' + CFG.BASELINE_MAX + ' caractères');
-  $('h-baseline').classList.add('counter');
-  return !!(m.name && m.title);
-}
-
-/* Custom baseline: the image must exist on the host for recipients to see it. */
-var statusSeq = 0;
-function updateBaselineStatus(){
-  var m = readModel(), box = $('baseline-status'), seq = ++statusSeq;
-  if (isDefaultBaseline(m.baseline)){ box.className = 'host-status'; box.innerHTML = ''; return; }
-  var file = blockFile(m.baseline), url = blockUrl(m.baseline);
-  box.className = 'host-status show warn';
-  box.innerHTML = 'Vérification de l\'image hébergée…';
-  probe(url).then(function(ok){
-    if (seq !== statusSeq) return;
-    if (ok){
-      box.className = 'host-status show ok';
-      box.innerHTML = '✓ Image de cette accroche déjà en ligne (<code>'+esc(file)+'</code>).';
-    } else {
-      box.className = 'host-status show warn';
-      box.innerHTML = '<b>Accroche personnalisée :</b> son image doit être publiée pour que vos destinataires la voient. '
-        + 'Téléchargez-la puis déposez-la dans le dossier <code>assets/'+esc(CFG.CUSTOM_BLOCK_DIR)+'</code> du site (nom de fichier à conserver : <code>'+esc(file.split('/').pop())+'</code>).'
-        + '<div class="row"><span></span><button type="button" class="btn small" id="dl-custom-block">Télécharger l\'image</button></div>';
-      $('dl-custom-block').onclick = function(){ download(file.split('/').pop(), renderBlock(m.baseline, 2)); };
-    }
-  });
+  fieldState('name', m.name ? 'ok' : (showRequired ? 'missing' : 'empty'), m.name ? '' : 'Champ obligatoire.');
+  fieldState('title', m.title ? 'ok' : 'empty', '');
+  fieldState('phone', m.phone.state, m.phone.state==='bad' ? 'Numéro non reconnu : il ne sera pas affiché.' : '');
+  fieldState('email', m.email.state, m.email.state==='bad' ? 'Adresse invalide : elle ne sera pas affichée.' : '');
+  fieldState('linkedin', m.linkedin.state, m.linkedin.state==='bad' ? 'Profil non reconnu (format linkedin.com/in/…) : l\'icône mènera à la page VoltR.' : '');
+  fieldState('rdv', m.rdv.state, m.rdv.state==='bad' ? 'Lien invalide : « Prendre rendez-vous » ne sera pas affiché.' : '');
+  return !!m.name;
 }
 
 /* =====================================================================
@@ -810,7 +756,7 @@ var CLIENTS = [
 
 function actionRun(kind){
   var m = readModel();
-  if (!m.name || !m.title){ updateHints(true); toast('Renseignez le nom et le titre.', true); return; }
+  if (!m.name){ updateHints(true); toast('Renseignez votre nom.', true); return; }
   var text = buildText(m), p;
   switch(kind){
     case 'rich':    p = copyRich(variant(m,'desktop'), text); break;
@@ -887,11 +833,9 @@ function checkHost(withBanner){
    WIRING
    ===================================================================== */
 var FIELDS = ['name','title','phone','email','linkedin','rdv'];
-var baselineTimer;
 
 function saveForm(){
   var o = {}; FIELDS.forEach(function(f){ o[f] = $(f).value; });
-  o.lock = $('lock').checked; o.baseline = $('baseline').value;
   store('voltr.form', JSON.stringify(o));
 }
 function restoreForm(){
@@ -899,7 +843,6 @@ function restoreForm(){
   try{
     var o = JSON.parse(raw);
     FIELDS.forEach(function(f){ if (typeof o[f]==='string') $(f).value = o[f]; });
-    if (o.lock === false){ $('lock').checked = false; $('baseline').disabled = false; if (typeof o.baseline==='string') $('baseline').value = o.baseline.slice(0, CFG.BASELINE_MAX); }
   }catch(e){}
 }
 
@@ -910,22 +853,17 @@ function onChange(){
   if (state.generated) renderResults();
 }
 
-$('baseline').value = CFG.DEFAULT_BASELINE;
-$('baseline').maxLength = CFG.BASELINE_MAX;
 restoreForm();
 
-FIELDS.forEach(function(f){ $(f).addEventListener('input', onChange); });
-$('baseline').addEventListener('input', function(){
-  updateHints(false); saveForm();
-  clearTimeout(baselineTimer);
-  baselineTimer = setTimeout(function(){ renderPreview(); updateBaselineStatus(); if (state.generated) renderResults(); }, 250);
+FIELDS.forEach(function(f){
+  $(f).addEventListener('input', onChange);
+  $(f).addEventListener('blur', function(){
+    if (clean(this.value)) touched[f] = true;
+    if (f==='phone'){ var ph = parsePhone(this.value); if (ph.state==='ok' && this.value !== ph.display){ this.value = ph.display; saveForm(); } }
+    updateHints(false);
+  });
 });
-$('lock').addEventListener('change', function(){
-  var locked = this.checked;
-  $('baseline').disabled = locked;
-  if (locked) $('baseline').value = CFG.DEFAULT_BASELINE; else $('baseline').focus();
-  onChange(); updateBaselineStatus();
-});
+FIELDS.forEach(function(f){ if (clean($(f).value)) touched[f] = true; });
 
 document.querySelectorAll('[data-device]').forEach(function(b){
   b.addEventListener('click', function(){
@@ -948,8 +886,8 @@ document.querySelectorAll('[data-theme]').forEach(function(b){
 $('form').addEventListener('submit', function(e){
   e.preventDefault();
   if (!updateHints(true)){
-    toast('Renseignez le nom et le titre.', true);
-    (!clean($('name').value) ? $('name') : $('title')).focus();
+    toast('Renseignez votre nom.', true);
+    $('name').scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
   state.generated = true;
@@ -962,16 +900,14 @@ $('asset-save').onclick = function(){
   var v = normBase($('asset-base').value);
   if (!parseUrl(v)){ toast('Adresse invalide.', true); return; }
   assetBase = v; store('voltr.assetBase', v); probeCache = {};
-  checkHost(state.generated); updateBaselineStatus(); if (state.generated) renderResults();
+  checkHost(state.generated); if (state.generated) renderResults();
   toast('Adresse enregistrée');
 };
 $('asset-reset').onclick = function(){
   store('voltr.assetBase', null); assetBase = detectAssetBase(); probeCache = {};
-  checkHost(state.generated); updateBaselineStatus(); if (state.generated) renderResults();
+  checkHost(state.generated); if (state.generated) renderResults();
   toast('Adresse par défaut rétablie');
 };
-$('dl-default-block').onclick = function(){ download(CFG.BLOCK_FILE, renderBlock(CFG.DEFAULT_BASELINE, 2)); };
-$('dl-icon').onclick = function(){ download(CFG.ICON_FILE, renderIcon(3)); };
 $('adv').addEventListener('toggle', function(){ if (this.open) checkHost(false); });
 
 document.querySelectorAll('[data-device]').forEach(function(x){ x.setAttribute('aria-pressed', x.getAttribute('data-device')===state.device ? 'true' : 'false'); });
@@ -979,20 +915,19 @@ document.querySelectorAll('[data-device]').forEach(function(x){ x.setAttribute('
 /* First paint: draw immediately, redraw once the embedded font is ready. */
 updateHints(false);
 renderPreview();
-updateBaselineStatus();
 fontsReady.then(function(){ localBlock.text = null; renderPreview(); });
 
 /* Public hooks used by tools/build-assets.cjs */
 window.VoltRSignature = {
   ready: fontsReady,
   renderBlock: renderBlock, renderIcon: renderIcon,
-  blockFile: blockFile, config: CFG,
+  config: CFG,
   build: function(data, kind){
     var m = {
       name: clean(data.name), title: clean(data.title),
       phone: parsePhone(data.phone||''), email: parseEmail(data.email||''),
       linkedin: parseLinkedin(data.linkedin||''), rdv: parseRdv(data.rdv||''),
-      baseline: clean(data.baseline) || CFG.DEFAULT_BASELINE
+      baseline: CFG.DEFAULT_BASELINE
     };
     return kind==='text' ? buildText(m) : variant(m, kind||'desktop');
   }

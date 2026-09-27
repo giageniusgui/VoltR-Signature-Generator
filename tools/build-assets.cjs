@@ -3,8 +3,7 @@
  * Génère les images hébergées de la signature à partir du générateur
  * lui-même (index.html), pour garantir un rendu identique à l'aperçu.
  *
- *   node tools/build-assets.cjs                      -> assets/signature-block.png + assets/linkedin.png
- *   node tools/build-assets.cjs --baseline "Texte"   -> assets/blocks/b-<hash>.png (accroche personnalisée)
+ *   node tools/build-assets.cjs   -> assets/signature-block.png + assets/linkedin.png
  *
  * Prérequis : npm i -D playwright (ou Playwright installé globalement).
  */
@@ -20,8 +19,6 @@ catch (e) {
 }
 
 const root = path.resolve(__dirname, '..');
-const args = process.argv.slice(2);
-const baselineArg = args.includes('--baseline') ? args[args.indexOf('--baseline') + 1] : null;
 
 function writeDataUrl(file, dataUrl) {
   const out = path.join(root, 'assets', file);
@@ -39,20 +36,12 @@ function writeDataUrl(file, dataUrl) {
   await page.waitForFunction(() => window.VoltRSignature);
   await page.evaluate(() => window.VoltRSignature.ready);
 
-  if (baselineArg) {
-    const res = await page.evaluate((b) => ({
-      file: window.VoltRSignature.blockFile(b),
-      data: window.VoltRSignature.renderBlock(b, 2)
-    }), baselineArg);
-    writeDataUrl(res.file, res.data);
-  } else {
-    const res = await page.evaluate(() => ({
-      block: window.VoltRSignature.renderBlock(window.VoltRSignature.config.DEFAULT_BASELINE, 2),
-      icon: window.VoltRSignature.renderIcon(3),
-      cfg: window.VoltRSignature.config
-    }));
-    writeDataUrl(res.cfg.BLOCK_FILE, res.block);
-    writeDataUrl(res.cfg.ICON_FILE, res.icon);
-  }
+  const res = await page.evaluate(() => ({
+    block: window.VoltRSignature.renderBlock(window.VoltRSignature.config.DEFAULT_BASELINE, 2),
+    icon: window.VoltRSignature.renderIcon(3),
+    cfg: window.VoltRSignature.config
+  }));
+  writeDataUrl(res.cfg.BLOCK_FILE, res.block);
+  writeDataUrl(res.cfg.ICON_FILE, res.icon);
   await browser.close();
 })().catch((e) => { console.error(e); process.exit(1); });

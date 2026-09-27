@@ -7,19 +7,21 @@ Un double-clic l'ouvre dans le navigateur par défaut (Mac, Windows, Linux). Il 
 
 1. Ouvrir `index.html` (double-clic) ou la version en ligne.
 2. Remplir le formulaire : l'aperçu se construit en direct (formats ordinateur/mobile, thèmes clair/sombre).
+   Contour vert = champ valide ; contour orange = champ invalide (il ne sera pas affiché, sans bloquer la génération).
 3. Cliquer sur **Générer vos signatures**, choisir sa messagerie (Gmail, Outlook, Apple Mail, Spark, Code HTML) puis suivre le guide affiché.
 
 ### Règles d'affichage
 
 | Champ | Règle |
 |---|---|
-| Nom, Titre | Obligatoires |
+| Nom | Seul champ obligatoire |
+| Titre | Facultatif (boîtes génériques ou de service) : s'il est vide, le filet se place sous le nom. |
 | Téléphone | Numéros français normalisés en `+33 X XX XX XX XX` (lien `tel:`). Un numéro non reconnu est masqué. |
 | E-mail | Masqué si vide ou invalide (lien `mailto:`). |
 | LinkedIn | Profil `linkedin.com/in/…` valide → profil de la personne ; sinon → [page VoltR](https://www.linkedin.com/company/voltr/home/). |
 | Rendez-vous | Lien `http(s)` valide → ligne « Prendre rendez-vous » ; sinon la ligne est masquée et la signature se resserre. |
 | www.voltr.tech | Fixe pour tout le monde. |
-| Accroche | Verrouillée par défaut (« Batteries lithium françaises à impact positif »). Déverrouillable, 52 caractères max. |
+| Accroche | Figée : « Batteries lithium françaises à impact positif » (intégrée à l'image du bloc). |
 
 ### Versions produites
 
@@ -58,13 +60,6 @@ Les messageries n'affichent pas les images intégrées au code d'une signature :
 Copier `index.html` et le dossier `assets/` à l'emplacement voulu sur voltr.tech (ex. `voltr.tech/signature/`). Mettre ensuite à jour `CFG.FALLBACK_ASSET_BASE` dans `index.html` pour la version hors ligne.
 Attention : les signatures déjà installées continueront de pointer vers l'ancienne adresse tant qu'elles ne seront pas régénérées. Gardez les deux hébergements le temps de la transition.
 
-### Accroches personnalisées
-
-Chaque accroche a sa propre image, `assets/blocks/b-<empreinte>.png` (le nom est calculé à partir du texte). Pour publier une nouvelle accroche :
-
-- dans l'outil : déverrouiller l'accroche, saisir le texte, **Télécharger l'image**, puis déposer le fichier dans `assets/blocks/` ;
-- ou en ligne de commande : `node tools/build-assets.cjs --baseline "Mon accroche"`.
-
 ## Régénérer les images
 
 ```bash
@@ -73,6 +68,7 @@ node tools/build-assets.cjs    # assets/signature-block.png + assets/linkedin.pn
 ```
 
 Les images sont produites par le même code que l'aperçu (`window.VoltRSignature.renderBlock`), donc toujours identiques.
+Pour changer l'accroche un jour : modifier `CFG.DEFAULT_BASELINE` dans `index.html`, relancer ce script et republier `assets/signature-block.png` (toutes les signatures existantes se mettent à jour, l'adresse de l'image ne change pas).
 
 ## Arborescence
 
@@ -81,7 +77,6 @@ index.html              Générateur (autonome : CSS, JS, polices et favicon int
 assets/                 Images hébergées référencées par les signatures
   signature-block.png   Bloc VoltR, accroche officielle
   linkedin.png          Icône LinkedIn
-  blocks/               Blocs des accroches personnalisées
 brand/                  Kit de marque VoltR (logos SVG/PNG, favicon, webclip)
 tools/build-assets.cjs  Génération des PNG via Playwright
 ```
