@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuto 2 · Générateur en fichier .html, images sur Google Drive</title>
+<link rel="stylesheet" href="tuto.css">
+</head>
+<body>
+<div class="page">
+<header>
+  <p class="kicker">Générateur de signature e-mail VoltR · Tuto 2</p>
+  <h1>Utiliser le générateur en fichier .html, avec les images sur Google Drive</h1>
+  <p>Environ 10 minutes · sans site web · avec le Google Drive de votre société</p>
+</header>
+
+<div class="summary">
+  <div><b>Ce que vous obtenez</b>Un fichier <code>.html</code> à distribuer : un double-clic l'ouvre dans le navigateur, sans installation.</div>
+  <div><b>Les images</b>Stockées dans un dossier Google Drive partagé par lien.</div>
+  <div><b>Ce qu'il vous faut</b>La pièce jointe <code>VoltR-signature-drive.zip</code>, un compte Google Drive, et Chrome, Edge, Safari ou Firefox.</div>
+</div>
+
+<div class="box warn"><b>À savoir avant de choisir cette méthode</b>Google Drive n'est pas prévu pour héberger des images d'e-mail. Le générateur convertit vos liens de partage en liens d'image directs, ce qui fonctionne aujourd'hui, mais Google peut modifier ce fonctionnement sans prévenir. Si vous voulez la solution la plus durable, préférez le <b>Tuto 1 (GitHub Pages)</b>. Avec un compte Google Workspace, l'administrateur peut aussi avoir interdit le partage « Tous les utilisateurs disposant du lien » : il faudra alors lui demander de l'autoriser.</div>
+
+<h2><span class="n">1</span>Décompresser la pièce jointe</h2>
+<p>Décompressez <code>VoltR-signature-drive.zip</code> : double-clic sur Mac, clic droit › <span class="ui">Extraire tout…</span> sur Windows. Vous obtenez :</p>
+<ul>
+  <li><code>Generateur-signature-VoltR-a-configurer.html</code> : le générateur, pas encore relié à vos images ;</li>
+  <li>le dossier <code>images</code>, qui contient <code>signature-block.png</code> (le bloc violet VoltR) et <code>linkedin.png</code> (l'icône).</li>
+</ul>
+
+<h2><span class="n">2</span>Créer un dossier dans Google Drive</h2>
+<ol>
+  <li>Ouvrez <code>https://drive.google.com</code>.</li>
+  <li>Placez-vous de préférence dans un <b>Drive partagé de la société</b> plutôt que dans « Mon Drive ». Les images ne disparaîtront pas si un compte personnel est supprimé un jour.</li>
+  <li><span class="ui">+ Nouveau</span> › <span class="ui">Nouveau dossier</span> › nommez-le par exemple <code>Signature e-mail – images</code>.</li>
+</ol>
+
+<h2><span class="n">3</span>Importer les deux images</h2>
+<p>Ouvrez ce dossier et glissez-y <code>signature-block.png</code> et <code>linkedin.png</code>. Ne les renommez pas, ne les ouvrez pas avec une autre application et ne les convertissez pas.</p>
+
+<h2><span class="n">4</span>Partager le dossier par lien</h2>
+<ol>
+  <li>Revenez au niveau du dossier, faites un clic droit dessus › <span class="ui">Partager</span> › <span class="ui">Partager</span>.</li>
+  <li>Dans <b>Accès général</b>, passez de <span class="ui">Limité</span> à <span class="ui">Tous les utilisateurs disposant du lien</span>, avec le rôle <span class="ui">Lecteur</span>.</li>
+  <li>Cliquez sur <span class="ui">OK</span>. Les deux images héritent automatiquement de ce partage.</li>
+</ol>
+
+<h2><span class="n">5</span>Copier le lien de chaque image</h2>
+<ol>
+  <li>Dans le dossier, clic droit sur <code>signature-block.png</code> › <span class="ui">Partager</span> › <span class="ui">Copier le lien</span>. Collez ce lien de côté (bloc-notes, e-mail brouillon…).</li>
+  <li>Faites de même pour <code>linkedin.png</code>.</li>
+</ol>
+<p>Un lien ressemble à <code>https://drive.google.com/file/d/1AbC…XyZ/view?usp=sharing</code>. Il faut bien le lien <b>de chaque image</b>, pas celui du dossier.</p>
+
+<h2><span class="n">6</span>Relier le générateur à vos images</h2>
+<ol>
+  <li>Double-cliquez sur <code>Generateur-signature-VoltR-a-configurer.html</code> : il s'ouvre dans votre navigateur.</li>
+  <li>Tout en bas de la page, cliquez sur <span class="ui">Paramètres avancés (hébergement des images)</span>.</li>
+  <li>Cochez <span class="ui">Liens individuels</span>.</li>
+  <li>Collez le lien de <code>signature-block.png</code> dans <b>Lien de l'image du bloc VoltR</b>, et celui de <code>linkedin.png</code> dans <b>Lien de l'icône LinkedIn</b>.</li>
+  <li>Cliquez sur <span class="ui">Appliquer et vérifier</span>.</li>
+</ol>
+<figure><img src="img/adv-links-avant.png" alt="Liens Google Drive collés dans les Paramètres avancés"><figcaption>Avant la vérification : les liens de partage Google Drive collés tels quels. Le message orange est normal à ce stade.</figcaption></figure>
+<p>Après quelques secondes, le message <b>« ✓ Images accessibles en ligne »</b> apparaît. Les liens sont remplacés par des liens d'image directs (<code>lh3.googleusercontent.com/…</code> ou <code>drive.google.com/thumbnail…</code>) : c'est normal, c'est la conversion automatique.</p>
+<figure><img src="img/adv-links-ok.png" alt="Liens convertis et vérifiés"><figcaption>Après la vérification : liens convertis, images trouvées.</figcaption></figure>
+<div class="box info"><b>Si un message ⚠ apparaît</b>Vérifiez que le partage est bien réglé sur « Tous les utilisateurs disposant du lien » (étape 4), que vous avez copié le lien de l'image et non celui du dossier, et que l'ordinateur est connecté à Internet.</div>
+
+<h2><span class="n">7</span>Enregistrer la version configurée</h2>
+<ol>
+  <li>Toujours dans <span class="ui">Paramètres avancés</span>, cliquez sur <span class="ui">Télécharger le générateur configuré (.html)</span>.</li>
+  <li>Le fichier <code>Generateur-signature-VoltR.html</code> arrive dans votre dossier <b>Téléchargements</b>.</li>
+</ol>
+<div class="box ok"><b>C'est ce fichier-là qu'on distribue</b><code>Generateur-signature-VoltR.html</code> contient déjà vos liens d'images : il fonctionne d'un double-clic, sans aucun réglage. Le fichier <code>…-a-configurer.html</code> ne sert plus qu'à refaire la configuration si besoin.</div>
+
+<h2><span class="n">8</span>Tester avant de distribuer</h2>
+<ul class="check">
+  <li>Ouvrez <code>Generateur-signature-VoltR.html</code>, remplissez le formulaire et cliquez sur <span class="ui">Générer vos signatures</span> : aucun encadré orange « Attention » ne doit apparaître.</li>
+  <li>Installez la signature dans votre messagerie en suivant le guide affiché.</li>
+  <li>Envoyez-vous un e-mail vers une adresse Gmail <b>et</b> une adresse Outlook : le bloc violet et l'icône LinkedIn doivent s'afficher.</li>
+</ul>
+
+<h2><span class="n">9</span>Distribuer</h2>
+<p>Envoyez <code>Generateur-signature-VoltR.html</code> à votre client, par e-mail ou via un dossier partagé. Chaque utilisateur l'enregistre, l'ouvre d'un double-clic, remplit ses informations, clique sur <span class="ui">Générer vos signatures</span> et suit le guide de sa messagerie (Gmail, Outlook, Apple Mail, Spark, mobile).</p>
+
+<h2>Entretien courant</h2>
+<table>
+  <tr><th style="width:34%">Besoin</th><th>Comment faire</th></tr>
+  <tr><td>Ne jamais faire</td><td>Supprimer ou déplacer les deux images, les mettre à la corbeille, ou arrêter le partage du dossier : toutes les signatures installées perdraient leur logo.</td></tr>
+  <tr><td>Remplacer une image sans casser les signatures</td><td>Clic droit sur l'image dans Drive › <span class="ui">Informations sur le fichier</span> › <span class="ui">Gérer les versions</span> (ou directement <span class="ui">Gérer les versions</span> selon la version de Drive) › <span class="ui">Importer une nouvelle version</span>. Le lien reste le même : les signatures existantes se mettent à jour. Taille attendue : 448 × 350 px pour le bloc, 48 × 48 px pour l'icône.</td></tr>
+  <tr><td>Les images ne s'affichent plus un jour</td><td>Google a peut-être changé son fonctionnement. Refaites les étapes 6 et 7 (l'outil teste plusieurs formats de lien) puis redistribuez le fichier. Si le problème persiste, passez au Tuto 1 (GitHub Pages).</td></tr>
+</table>
+
+<h2>En cas de souci</h2>
+<table>
+  <tr><th style="width:34%">Symptôme</th><th>Solution</th></tr>
+  <tr><td>Le fichier .html s'ouvre dans un éditeur de texte</td><td>Clic droit sur le fichier › <span class="ui">Ouvrir avec</span> › Chrome, Edge, Safari ou Firefox.</td></tr>
+  <tr><td>Le bouton « Copier » ne fonctionne pas</td><td>Essayez un autre navigateur (Chrome ou Edge recommandés), ou utilisez l'onglet <span class="ui">Code HTML</span>.</td></tr>
+  <tr><td>L'option « Tous les utilisateurs disposant du lien » est grisée</td><td>Votre administrateur Google Workspace l'a interdite : demandez-lui de l'autoriser pour ce dossier, ou utilisez le Tuto 1.</td></tr>
+  <tr><td>Le logo n'apparaît pas dans un e-mail reçu</td><td>Beaucoup de messageries bloquent les images tant que le destinataire n'a pas cliqué sur « Télécharger les images ». Vérifiez avec une autre adresse.</td></tr>
+</table>
+
+<footer>Tuto 2 · Générateur de signature e-mail VoltR. Voir aussi le Tuto 1 (GitHub Pages, méthode recommandée).</footer>
+</div>
+</body>
+</html>

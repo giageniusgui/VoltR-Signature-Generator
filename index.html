@@ -126,13 +126,21 @@
   details.adv summary{cursor:pointer;font-weight:600;color:#44444F}
   details.adv .in{margin-top:12px;display:grid;gap:10px;max-width:760px}
   details.adv .row{display:flex;gap:8px;flex-wrap:wrap}
-  details.adv input{flex:1;min-width:260px;border:1px solid #D3D3DD;border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px}
+  details.adv input[type=url]{flex:1;min-width:260px;width:100%;border:1px solid #D3D3DD;border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px}
+  details.adv .modes{display:grid;gap:8px}
+  details.adv .modes label{display:flex;gap:9px;align-items:flex-start;cursor:pointer;color:#2A2A33}
+  details.adv .modes input{margin-top:3px;accent-color:var(--violet)}
+  details.adv .links{display:grid;gap:10px}
+  details.adv .links label{display:grid;gap:5px;font-weight:600;color:#2A2A33}
+  details.adv .links input{font-weight:400}
+  details.adv .dl-box{margin-top:6px;padding:12px 14px;border:1px dashed #C9C9D6;border-radius:10px;display:grid;gap:8px;justify-items:start}
   footer{margin-top:34px;text-align:center;color:#9A9AA6;font-size:12.5px}
 
   .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#15151A;color:#fff;padding:11px 16px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10;max-width:calc(100% - 32px)}
   .toast.show{opacity:1;transform:translate(-50%,0)}
   .toast.err{background:var(--err)}
   .sr{position:absolute;left:-9999px}
+  [hidden]{display:none !important}
 </style>
 </head>
 <body>
@@ -241,13 +249,28 @@
   <details class="adv" id="adv">
     <summary>Paramètres avancés (hébergement des images)</summary>
     <div class="in">
-      <div>Les images de la signature (bloc VoltR, icône LinkedIn) doivent être hébergées en ligne : les messageries ne savent pas afficher des images intégrées dans une signature. Adresse utilisée actuellement :</div>
-      <div class="row">
-        <input type="url" id="asset-base" spellcheck="false" aria-label="Adresse du dossier d'images">
-        <button type="button" class="btn small" id="asset-save">Enregistrer</button>
-        <button type="button" class="btn small" id="asset-reset">Par défaut</button>
+      <div>Les images de la signature (bloc VoltR, icône LinkedIn) doivent être hébergées en ligne : les messageries n'affichent pas les images intégrées dans une signature.</div>
+      <div class="modes" role="radiogroup" aria-label="Hébergement des images">
+        <label><input type="radio" name="hmode" value="auto"><span><b>Automatique</b> : dossier <code>assets/</code> placé à côté de cette page en ligne (GitHub Pages, site web).</span></label>
+        <label><input type="radio" name="hmode" value="folder"><span><b>Dossier en ligne</b> : adresse d'un dossier web contenant <code>signature-block.png</code> et <code>linkedin.png</code>.</span></label>
+        <label><input type="radio" name="hmode" value="links"><span><b>Liens individuels</b> : un lien par image (Google Drive ou autre).</span></label>
       </div>
+      <div class="row" id="host-folder">
+        <input type="url" id="asset-base" spellcheck="false" placeholder="https://…/assets/" aria-label="Adresse du dossier d'images">
+      </div>
+      <div class="links" id="host-links">
+        <label>Lien de l'image du bloc VoltR (signature-block.png)
+          <input type="url" id="link-block" spellcheck="false" placeholder="https://drive.google.com/file/d/…/view?usp=sharing"></label>
+        <label>Lien de l'icône LinkedIn (linkedin.png)
+          <input type="url" id="link-icon" spellcheck="false" placeholder="https://drive.google.com/file/d/…/view?usp=sharing"></label>
+      </div>
+      <div class="row"><button type="button" class="btn small primary" id="asset-apply">Appliquer et vérifier</button></div>
       <div class="hint" id="asset-status"></div>
+      <div class="dl-box">
+        <div>Pour distribuer l'outil avec ce réglage d'hébergement :</div>
+        <button type="button" class="btn small" id="asset-download">Télécharger le générateur configuré (.html)</button>
+        <div class="hint">Le fichier obtenu s'ouvre d'un double-clic et fonctionne sans aucun réglage.</div>
+      </div>
     </div>
   </details>
 
@@ -260,6 +283,9 @@
 (function(){
 'use strict';
 
+/* Untouched copy of this page, used to produce a pre-configured copy of the generator. */
+var PRISTINE = '<!doctype html>\n' + document.documentElement.outerHTML;
+
 /* =====================================================================
    CONFIGURATION
    ===================================================================== */
@@ -269,10 +295,6 @@ var CFG = {
   WEBSITE_LABEL: 'www.voltr.tech',
   LINKEDIN_COMPANY: 'https://www.linkedin.com/company/voltr/home/',
   RDV_LABEL: 'Prendre rendez-vous',
-  // Used when the page is opened as a local file (or from localhost).
-  // When the page is served from a real web host (GitHub Pages, voltr.tech…)
-  // the images are taken from the "assets/" folder next to the page.
-  FALLBACK_ASSET_BASE: 'https://giageniusgui.github.io/VoltR-Signature-Generator/assets/',
   BLOCK_FILE: 'signature-block.png',
   ICON_FILE: 'linkedin.png',
   C: { ink:'#121212', title:'#0021D1', rule:'#9C9CA8', violet:'#840AFF', blue:'#0021D1', linkedin:'#0A66C2' },
@@ -282,6 +304,15 @@ var CFG = {
   DESKTOP: { imgW:224, imgH:175, gap:28, colW:300, name:16, nameLH:20, title:13, titleLH:17, text:13, textLH:20, icon:16 },
   COMPACT: { imgW:128, imgH:100, gap:16, colW:200, name:15, nameLH:19, title:12, titleLH:16, text:12, textLH:18, icon:16 }
 };
+
+/*
+  Image hosting. The value between the two markers is rewritten by
+  "Télécharger le générateur configuré" (advanced settings); do not remove the markers.
+    {"mode":"auto"}                                  assets/ folder next to the page, when served online
+    {"mode":"folder","base":"https://…/assets/"}     any online folder
+    {"mode":"links","block":"https://…","icon":"…"}  one direct URL per image (e.g. Google Drive)
+*/
+var HOSTING_DEFAULT = /*HOSTING*/{"mode":"auto"}/*HOSTING*/;
 
 /* VoltR logo (brand kit: logo_blanc_horizontal.svg), viewBox 0 0 1271.3 353.1 */
 var LOGO = {
@@ -441,28 +472,60 @@ function renderIcon(scale){
 /* =====================================================================
    ASSET HOSTING
    ===================================================================== */
-function detectAssetBase(){
-  var saved = load('voltr.assetBase');
-  if (saved) return saved;
+function pageAssetBase(){
   var l = window.location;
   if (/^https?:$/.test(l.protocol) && !/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(l.hostname)){
     return l.href.replace(/[#?].*$/,'').replace(/[^\/]*$/,'') + 'assets/';
   }
-  return CFG.FALLBACK_ASSET_BASE;
+  return null; // opened as a local file: needs "folder" or "links" hosting
 }
-var assetBase = detectAssetBase();
+function resolveHosting(h){
+  if (h.mode==='links') return (h.block && h.icon) ? {block:h.block, icon:h.icon} : null;
+  var base = h.mode==='folder' ? h.base : pageAssetBase();
+  return base ? {block: base + CFG.BLOCK_FILE, icon: base + CFG.ICON_FILE} : null;
+}
+var hosting = JSON.parse(JSON.stringify(HOSTING_DEFAULT));
+var assetUrls = resolveHosting(hosting);
+var UNSET = 'https://images-non-hebergees.invalid/';
 function normBase(b){ b = clean(b); return b && !/\/$/.test(b) ? b+'/' : b; }
-function blockUrl(){ return assetBase + CFG.BLOCK_FILE; }
-function iconUrl(){ return assetBase + CFG.ICON_FILE; }
+function blockUrl(){ return assetUrls ? assetUrls.block : UNSET + CFG.BLOCK_FILE; }
+function iconUrl(){ return assetUrls ? assetUrls.icon : UNSET + CFG.ICON_FILE; }
+
 var probeCache = {};
-function probe(url){
+function probe(url){ // resolves with the image width in pixels, 0 if unreachable
   if (!probeCache[url]) probeCache[url] = new Promise(function(res){
-    var i = new Image(); var t = setTimeout(function(){ res(false); }, 8000);
-    i.onload = function(){ clearTimeout(t); res(true); };
-    i.onerror = function(){ clearTimeout(t); delete probeCache[url]; res(false); };
+    var i = new Image(); var t = setTimeout(function(){ res(0); }, 8000);
+    i.onload = function(){ clearTimeout(t); res(i.naturalWidth || 1); };
+    i.onerror = function(){ clearTimeout(t); delete probeCache[url]; res(0); };
     i.src = url + (url.indexOf('?')<0 ? '?' : '&') + 'probe=' + Date.now();
   });
   return probeCache[url];
+}
+
+/* Google Drive share links -> direct image URLs (first one that serves the full-size image wins). */
+function driveId(s){
+  var m = s.match(/\/d\/([A-Za-z0-9_-]{20,})/) || s.match(/[?&]id=([A-Za-z0-9_-]{20,})/);
+  if (m) return m[1];
+  return /^[A-Za-z0-9_-]{25,}$/.test(s) ? s : null;
+}
+function linkCandidates(link){
+  link = clean(link).replace(/\s/g,'');
+  var id = driveId(link);
+  if (id && (/google\.com|googleusercontent\.com/.test(link) || link===id)) return [
+    'https://lh3.googleusercontent.com/d/' + id,
+    'https://drive.google.com/thumbnail?id=' + id + '&sz=w1000',
+    'https://drive.usercontent.google.com/download?id=' + id + '&export=view'
+  ];
+  var u = parseUrl(link);
+  return u ? [u.href] : [];
+}
+function resolveLink(link, minW){
+  var c = linkCandidates(link), i = 0;
+  return (function next(){
+    if (i >= c.length) return Promise.resolve(null);
+    var u = c[i++];
+    return probe(u).then(function(w){ return w >= minW ? u : next(); });
+  })();
 }
 
 /* =====================================================================
@@ -814,19 +877,37 @@ function selectTab(id){
 /* =====================================================================
    HOST CHECK (images reachable by recipients?)
    ===================================================================== */
+function selectedMode(){ var r = document.querySelector('input[name=hmode]:checked'); return r ? r.value : 'auto'; }
+function showModeFields(mode){
+  $('host-folder').hidden = mode!=='folder';
+  $('host-links').hidden = mode!=='links';
+}
+function syncHostingForm(){
+  document.querySelectorAll('input[name=hmode]').forEach(function(r){ r.checked = r.value===hosting.mode; });
+  $('asset-base').value = hosting.mode==='folder' ? hosting.base : (pageAssetBase() || '');
+  if (hosting.mode==='links'){ $('link-block').value = hosting.block; $('link-icon').value = hosting.icon; }
+  showModeFields(hosting.mode);
+}
 function checkHost(withBanner){
   var st = $('asset-status'), banner = $('host-banner');
-  $('asset-base').value = assetBase;
-  st.className = 'hint'; st.textContent = 'Vérification…';
-  probe(assetBase + CFG.BLOCK_FILE).then(function(ok){
-    st.className = 'hint ' + (ok ? 'ok' : 'warn');
-    st.textContent = ok ? '✓ Images accessibles en ligne.' : '⚠ Images introuvables à cette adresse (hors ligne, ou hébergement pas encore activé).';
+  var show = function(ok, msg){
+    st.className = 'hint ' + (ok ? 'ok' : 'warn'); st.textContent = msg;
     if (withBanner){
       banner.className = 'banner' + (ok ? '' : ' show');
-      banner.innerHTML = ok ? '' : '<b>Attention :</b> les images de la signature ne sont pas accessibles à l\'adresse <code>'+esc(assetBase)+'</code>. '
-        + 'Vous pouvez copier la signature, mais vos destinataires ne verront le logo qu\'une fois les images publiées (voir « Paramètres avancés » en bas de page).';
+      banner.innerHTML = ok ? '' : '<b>Attention :</b> ' + esc(msg.replace(/^⚠\s*/,''))
+        + ' Vous pouvez copier la signature, mais vos destinataires ne verront pas les images tant que l\'hébergement n\'est pas en place (voir « Paramètres avancés » en bas de page).';
     }
+  };
+  if (!assetUrls){ show(false, '⚠ Hébergement des images non configuré.'); return; }
+  st.className = 'hint'; st.textContent = 'Vérification…';
+  Promise.all([probe(assetUrls.block), probe(assetUrls.icon)]).then(function(r){
+    if (r[0] && r[1]) show(true, '✓ Images accessibles en ligne.');
+    else show(false, '⚠ ' + (!r[0] && !r[1] ? 'Images introuvables' : !r[0] ? 'Image du bloc VoltR introuvable' : 'Icône LinkedIn introuvable') + ' (pas de connexion, ou hébergement pas encore en place).');
   });
+}
+function applyHosting(h){
+  hosting = h; assetUrls = resolveHosting(hosting); probeCache = {};
+  checkHost(state.generated); if (state.generated) renderResults();
 }
 
 /* =====================================================================
@@ -896,19 +977,47 @@ $('form').addEventListener('submit', function(e){
   $('results').scrollIntoView({behavior:'smooth', block:'start'});
 });
 
-$('asset-save').onclick = function(){
-  var v = normBase($('asset-base').value);
-  if (!parseUrl(v)){ toast('Adresse invalide.', true); return; }
-  assetBase = v; store('voltr.assetBase', v); probeCache = {};
-  checkHost(state.generated); if (state.generated) renderResults();
-  toast('Adresse enregistrée');
+document.querySelectorAll('input[name=hmode]').forEach(function(r){
+  r.addEventListener('change', function(){ showModeFields(this.value); });
+});
+$('asset-apply').onclick = function(){
+  var mode = selectedMode(), st = $('asset-status');
+  if (mode==='auto'){
+    applyHosting({mode:'auto'});
+    toast(pageAssetBase() ? 'Réglage appliqué' : 'Le mode automatique ne fonctionne que pour une page en ligne.', !pageAssetBase());
+  } else if (mode==='folder'){
+    var v = normBase($('asset-base').value);
+    if (!parseUrl(v)){ toast('Adresse de dossier invalide.', true); return; }
+    applyHosting({mode:'folder', base:v}); toast('Réglage appliqué');
+  } else {
+    if (!clean($('link-block').value) || !clean($('link-icon').value)){ toast('Renseignez les deux liens.', true); return; }
+    st.className = 'hint'; st.textContent = 'Vérification des liens…';
+    Promise.all([
+      resolveLink($('link-block').value, CFG.DESKTOP.imgW*2),
+      resolveLink($('link-icon').value, CFG.DESKTOP.icon*3)
+    ]).then(function(r){
+      if (!r[0] || !r[1]){
+        st.className = 'hint warn';
+        st.textContent = '⚠ ' + (!r[0] && !r[1] ? 'Aucune des deux images n\'est accessible' : !r[0] ? 'L\'image du bloc VoltR n\'est pas accessible' : 'L\'icône LinkedIn n\'est pas accessible')
+          + ' : vérifiez le lien et que le partage est réglé sur « Tous les utilisateurs disposant du lien ».';
+        return;
+      }
+      applyHosting({mode:'links', block:r[0], icon:r[1]});
+      $('link-block').value = r[0]; $('link-icon').value = r[1];
+      toast('Liens vérifiés et appliqués ✓');
+    });
+  }
 };
-$('asset-reset').onclick = function(){
-  store('voltr.assetBase', null); assetBase = detectAssetBase(); probeCache = {};
-  checkHost(state.generated); if (state.generated) renderResults();
-  toast('Adresse par défaut rétablie');
+$('asset-download').onclick = function(){
+  var h = hosting.mode==='auto' ? (pageAssetBase() ? {mode:'folder', base:pageAssetBase()} : null) : hosting;
+  if (!h){ toast('Configurez d\'abord l\'hébergement des images.', true); return; }
+  var MK = '/*' + 'HOSTING' + '*/', a = PRISTINE.indexOf(MK), b = PRISTINE.indexOf(MK, a + MK.length);
+  if (a < 0 || b < 0){ toast('Copie impossible : fichier modifié.', true); return; }
+  var src = PRISTINE.slice(0, a + MK.length) + JSON.stringify(h).replace(/</g,'\\u003c') + PRISTINE.slice(b);
+  download('Generateur-signature-VoltR.html', src);
+  toast('Générateur configuré téléchargé ✓');
 };
-$('adv').addEventListener('toggle', function(){ if (this.open) checkHost(false); });
+$('adv').addEventListener('toggle', function(){ if (this.open){ syncHostingForm(); checkHost(false); } });
 
 document.querySelectorAll('[data-device]').forEach(function(x){ x.setAttribute('aria-pressed', x.getAttribute('data-device')===state.device ? 'true' : 'false'); });
 

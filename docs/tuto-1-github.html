@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuto 1 · Générateur de signature sur GitHub Pages</title>
+<link rel="stylesheet" href="tuto.css">
+</head>
+<body>
+<div class="page">
+<header>
+  <p class="kicker">Générateur de signature e-mail VoltR · Tuto 1</p>
+  <h1>Héberger le générateur sur votre propre compte GitHub</h1>
+  <p>Environ 15 minutes · gratuit · aucune connaissance technique requise</p>
+</header>
+
+<div class="summary">
+  <div><b>Ce que vous obtenez</b>Votre propre adresse web pour le générateur, par exemple <code>https://votre-identifiant.github.io/signature-voltr/</code></div>
+  <div><b>Les images</b>Hébergées automatiquement au même endroit, sans aucun réglage.</div>
+  <div><b>Ce qu'il vous faut</b>La pièce jointe <code>VoltR-signature-projet.zip</code> et Chrome ou Edge.</div>
+</div>
+
+<div class="box info"><b>Pourquoi cette méthode est recommandée</b>C'est la solution la plus fiable : GitHub Pages est prévu pour publier des pages et des images. Les signatures fonctionnent dans toutes les messageries, et l'outil trouve ses images tout seul.</div>
+
+<h2><span class="n">1</span>Créer un compte GitHub</h2>
+<ol>
+  <li>Allez sur <code>https://github.com/signup</code>.</li>
+  <li>Utilisez de préférence une <b>adresse e-mail professionnelle</b> de votre société.</li>
+  <li>Choisissez l'<b>identifiant</b> (<i>username</i>) avec soin : il fera partie de l'adresse du générateur (<code>https://<b>identifiant</b>.github.io/…</code>). Préférez le nom de la société, en minuscules et sans espace.</li>
+  <li>Validez l'e-mail de confirmation reçu, puis connectez-vous.</li>
+</ol>
+
+<h2><span class="n">2</span>Créer le dépôt (l'espace qui contiendra les fichiers)</h2>
+<ol>
+  <li>En haut à droite, cliquez sur <span class="ui">+</span> puis <span class="ui">New repository</span>.</li>
+  <li><b>Repository name</b> : <code>signature-voltr</code> (minuscules, avec un tiret). Ce nom fera aussi partie de l'adresse.</li>
+  <li>Cochez <span class="ui">Public</span>. C'est obligatoire pour la publication gratuite, et le générateur ne contient aucune donnée confidentielle.</li>
+  <li>Ne cochez <b>rien d'autre</b> (pas de README, pas de .gitignore, pas de licence).</li>
+  <li>Cliquez sur <span class="ui">Create repository</span>.</li>
+</ol>
+
+<h2><span class="n">3</span>Déposer les fichiers</h2>
+<ol>
+  <li>Sur votre ordinateur, décompressez <code>VoltR-signature-projet.zip</code> : double-clic sur Mac, clic droit › <span class="ui">Extraire tout…</span> sur Windows. Vous obtenez un dossier <code>VoltR-signature-projet</code>.</li>
+  <li>Sur la page de votre nouveau dépôt (encore vide), cliquez sur le lien <span class="ui">uploading an existing file</span>, dans la phrase « …or upload an existing file ».</li>
+  <li>Ouvrez le dossier <code>VoltR-signature-projet</code>, sélectionnez <b>tout son contenu</b> (<code>Ctrl</code>+<code>A</code> sur Windows, <code>⌘</code>+<code>A</code> sur Mac) et glissez-le dans la zone de la page GitHub. Le contenu comprend <code>index.html</code>, <code>README.md</code> et les dossiers <code>assets</code>, <code>brand</code>, <code>docs</code> et <code>tools</code>.</li>
+  <li>Attendez que la liste des fichiers s'affiche, puis cliquez sur le bouton vert <span class="ui">Commit changes</span> en bas de page.</li>
+</ol>
+<div class="box warn"><b>Vérification importante</b>Sur la page du dépôt, <code>index.html</code> et le dossier <code>assets</code> doivent apparaître <b>directement</b> dans la liste, et non à l'intérieur d'un dossier <code>VoltR-signature-projet</code>. Si c'est le cas, vous avez glissé le dossier au lieu de son contenu. Supprimez le dépôt (<span class="ui">Settings</span> › tout en bas <span class="ui">Delete this repository</span>) et recommencez les étapes 2 et 3.</div>
+
+<h2><span class="n">4</span>Publier le site (GitHub Pages)</h2>
+<ol>
+  <li>Dans le dépôt, cliquez sur l'onglet <span class="ui">Settings</span> (roue dentée), puis sur <span class="ui">Pages</span> dans le menu de gauche.</li>
+  <li>Section <b>Build and deployment</b>, champ <b>Source</b> : choisissez <span class="ui">Deploy from a branch</span>.</li>
+  <li>Champ <b>Branch</b> : choisissez <span class="ui">main</span> dans le premier menu et laissez <span class="ui">/ (root)</span> dans le second. Cliquez sur <span class="ui">Save</span>.</li>
+  <li>Attendez 1 à 3 minutes, puis rechargez la page. Un encadré doit afficher <b>« Your site is live at https://votre-identifiant.github.io/signature-voltr/ »</b>.</li>
+</ol>
+
+<h2><span class="n">5</span>Vérifier que tout fonctionne</h2>
+<ul class="check">
+  <li><code>https://votre-identifiant.github.io/signature-voltr/</code> affiche le générateur.</li>
+  <li><code>https://votre-identifiant.github.io/signature-voltr/assets/signature-block.png</code> affiche le bloc violet VoltR.</li>
+  <li>En bas du générateur, <span class="ui">Paramètres avancés</span> indique <b>« ✓ Images accessibles en ligne »</b> avec le mode <b>Automatique</b>.</li>
+</ul>
+<figure><img src="img/adv-auto.png" alt="Paramètres avancés en mode automatique, images accessibles"><figcaption>Paramètres avancés : mode Automatique, images trouvées. Aucun réglage n'est nécessaire.</figcaption></figure>
+
+<h2><span class="n">6</span>Distribuer le générateur à vos clients</h2>
+<p>Deux possibilités, que vous pouvez combiner :</p>
+<table>
+  <tr><th style="width:34%">Méthode</th><th>Comment</th></tr>
+  <tr><td><b>A · Le lien web</b> (recommandé)</td><td>Envoyez simplement l'adresse <code>https://votre-identifiant.github.io/signature-voltr/</code>. Chaque personne l'ouvre, remplit ses informations, clique sur <span class="ui">Générer vos signatures</span> et suit le guide de sa messagerie.</td></tr>
+  <tr><td><b>B · Un fichier hors ligne</b></td><td>Sur votre site : <span class="ui">Paramètres avancés</span> › <span class="ui">Télécharger le générateur configuré (.html)</span>. Le fichier <code>Generateur-signature-VoltR.html</code> s'ouvre d'un double-clic et utilise les images de votre site. Vous pouvez l'envoyer par e-mail.</td></tr>
+</table>
+<figure><img src="img/outil.png" alt="Le générateur : formulaire et aperçu en direct"><figcaption>Le générateur : contour vert pour un champ valide, orange pour un champ invalide, aperçu en direct à droite.</figcaption></figure>
+
+<h2><span class="n">7</span>Si des signatures ont déjà été installées avec un autre hébergement</h2>
+<div class="box warn"><b>À faire une seule fois</b>Une signature garde l'adresse des images au moment où elle a été créée. Les personnes qui ont installé leur signature avec une autre version du générateur doivent la <b>regénérer depuis votre site et la réinstaller</b> (quelques minutes, même guide). Sinon, le logo disparaîtra de leurs e-mails le jour où l'ancien hébergement sera supprimé.</div>
+
+<h2>Entretien courant</h2>
+<table>
+  <tr><th style="width:34%">Besoin</th><th>Comment faire</th></tr>
+  <tr><td>Remplacer une image (ex. nouveau logo)</td><td>Dans le dépôt, ouvrez le dossier <code>assets</code> › <span class="ui">Add file</span> › <span class="ui">Upload files</span>. Déposez le nouveau fichier avec <b>exactement le même nom</b> (<code>signature-block.png</code> ou <code>linkedin.png</code>) › <span class="ui">Commit changes</span>. Toutes les signatures existantes se mettent à jour, car l'adresse ne change pas. Taille attendue : 448 × 350 px pour le bloc, 48 × 48 px pour l'icône.</td></tr>
+  <tr><td>Modifier un fichier</td><td>Cliquez sur le fichier dans le dépôt › icône crayon (<span class="ui">Edit</span>) › modifiez › <span class="ui">Commit changes</span>. La mise en ligne se fait automatiquement en 1 à 2 minutes.</td></tr>
+  <tr><td>À éviter absolument</td><td>Renommer le dépôt, changer d'identifiant GitHub, repasser le dépôt en privé ou supprimer le dossier <code>assets</code>. Chacune de ces actions change ou coupe l'adresse des images et casse les signatures déjà installées.</td></tr>
+</table>
+
+<h2>En cas de souci</h2>
+<table>
+  <tr><th style="width:34%">Symptôme</th><th>Solution</th></tr>
+  <tr><td>Erreur 404 juste après l'activation</td><td>Patientez 5 minutes : la première publication peut être lente.</td></tr>
+  <tr><td>Le menu <b>Branch</b> ne propose pas <code>main</code></td><td>Les fichiers n'ont pas été enregistrés : refaites l'étape 3, jusqu'au bouton <span class="ui">Commit changes</span>.</td></tr>
+  <tr><td>GitHub demande un abonnement pour Pages</td><td>Le dépôt est privé : <span class="ui">Settings</span> › <span class="ui">General</span> › tout en bas <span class="ui">Change visibility</span> › <span class="ui">Public</span>.</td></tr>
+  <tr><td>Le logo n'apparaît pas dans un e-mail reçu</td><td>Beaucoup de messageries (Outlook notamment) bloquent les images tant que le destinataire n'a pas cliqué sur « Télécharger les images ». C'est normal : vérifiez avec une autre adresse.</td></tr>
+</table>
+
+<footer>Tuto 1 · Générateur de signature e-mail VoltR. Voir aussi le Tuto 2 (fichier .html + Google Drive) et le fichier <code>README.md</code> du projet.</footer>
+</div>
+</body>
+</html>

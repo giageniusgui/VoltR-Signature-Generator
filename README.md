@@ -45,20 +45,23 @@ Un double-clic l'ouvre dans le navigateur par défaut (Mac, Windows, Linux). Il 
 
 ## Hébergement des images
 
-Les messageries n'affichent pas les images intégrées au code d'une signature : les PNG de `assets/` doivent donc être **en ligne**.
+Les messageries n'affichent pas les images intégrées au code d'une signature : `assets/signature-block.png` et `assets/linkedin.png` doivent donc être **en ligne**.
+Le réglage se fait sans toucher au code, dans **Paramètres avancés** en bas du générateur :
 
-- Si la page est servie en ligne (GitHub Pages, voltr.tech…), les images sont prises dans le dossier `assets/` **à côté de la page**. Le passage sur voltr.tech est donc automatique.
-- Si la page est ouverte en local (double-clic), l'adresse par défaut est `https://giageniusgui.github.io/VoltR-Signature-Generator/assets/` (modifiable dans `CFG.FALLBACK_ASSET_BASE` ou dans **Paramètres avancés**).
-- L'outil vérifie que les images sont accessibles et affiche un avertissement sinon.
+| Mode | Quand l'utiliser |
+|---|---|
+| **Automatique** (par défaut) | Page publiée en ligne (GitHub Pages, site web) : les images sont prises dans le dossier `assets/` à côté de la page. |
+| **Dossier en ligne** | Images publiées dans un autre dossier web (ex. `https://www.exemple.fr/signature/assets/`). |
+| **Liens individuels** | Un lien par image, par exemple des liens de partage **Google Drive** : l'outil les convertit en liens d'image directs et vérifie qu'ils fonctionnent. |
 
-### Activer GitHub Pages
+Le bouton **Télécharger le générateur configuré (.html)** produit une copie du générateur avec ce réglage intégré. C'est ce fichier qu'on distribue : il s'ouvre d'un double-clic, sans aucun réglage.
+Un `index.html` ouvert en local sans réglage affiche un avertissement « Hébergement des images non configuré ».
 
-*Settings* → *Pages* → *Build and deployment* → *Deploy from a branch* → choisir la branche (par ex. `main`) et le dossier `/ (root)`.
+Pas à pas : [`docs/tuto-1-github.html`](docs/tuto-1-github.html) (GitHub Pages) et [`docs/tuto-2-google-drive.html`](docs/tuto-2-google-drive.html) (fichier .html + Google Drive).
 
-### Migration vers voltr.tech
+### Changer d'hébergement
 
-Copier `index.html` et le dossier `assets/` à l'emplacement voulu sur voltr.tech (ex. `voltr.tech/signature/`). Mettre ensuite à jour `CFG.FALLBACK_ASSET_BASE` dans `index.html` pour la version hors ligne.
-Attention : les signatures déjà installées continueront de pointer vers l'ancienne adresse tant qu'elles ne seront pas régénérées. Gardez les deux hébergements le temps de la transition.
+Les signatures déjà installées gardent l'adresse des images au moment de leur création. Après un changement d'hébergement, chaque utilisateur doit **regénérer et réinstaller** sa signature ; gardez l'ancien hébergement en ligne le temps de la transition.
 
 ## Régénérer les images
 
@@ -78,5 +81,6 @@ assets/                 Images hébergées référencées par les signatures
   signature-block.png   Bloc VoltR, accroche officielle
   linkedin.png          Icône LinkedIn
 brand/                  Kit de marque VoltR (logos SVG/PNG, favicon, webclip)
+docs/                   Tutoriels (GitHub Pages ; fichier .html + Google Drive)
 tools/build-assets.cjs  Génération des PNG via Playwright
 ```
