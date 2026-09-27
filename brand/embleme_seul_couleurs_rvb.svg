@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 530.3 360.8">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: url(#Dégradé_sans_nom_5);
+      }
+
+      .cls-4 {
+        fill: url(#Dégradé_sans_nom_5-2);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-2" x="6.9" y="7.1" width="524.1" height="350.4"/>
+    </clipPath>
+    <linearGradient id="Dégradé_sans_nom_5" data-name="Dégradé sans nom 5" x1="175.9" y1="2481.8" x2="175.9" y2="2065.7" gradientTransform="translate(0 2498) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#840aff"/>
+      <stop offset="1" stop-color="#0021d1"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_5-2" data-name="Dégradé sans nom 5" x1="398.7" y1="2486.4" x2="398.7" y2="2279.4" xlink:href="#Dégradé_sans_nom_5"/>
+  </defs>
+  <g class="cls-1">
+    <g>
+      <path class="cls-3" d="M6.2,7.1h174.1l165.3,350.4h-176.5L6.2,7.1Z"/>
+      <path class="cls-4" d="M351.9,7.1h174.7l-81,174.3h-174.7L351.9,7.1Z"/>
+    </g>
+  </g>
+</svg>

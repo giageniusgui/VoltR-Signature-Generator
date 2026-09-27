@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 694.3 657.8">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: url(#Dégradé_sans_nom);
+      }
+
+      .cls-4 {
+        fill: url(#Dégradé_sans_nom-2);
+      }
+
+      .cls-5 {
+        fill: #121212;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-2" x="58.9" y="7.1" width="524.1" height="350.4"/>
+    </clipPath>
+    <linearGradient id="Dégradé_sans_nom" data-name="Dégradé sans nom" x1="227.8" y1="3143.8" x2="227.8" y2="2727.7" gradientTransform="translate(0 3160) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6f3e90"/>
+      <stop offset="1" stop-color="#2c3a8e"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom-2" data-name="Dégradé sans nom" x1="450.7" y1="3148.4" x2="450.7" y2="2941.4" xlink:href="#Dégradé_sans_nom"/>
+  </defs>
+  <path class="cls-5" d="M203.9,426.9l-84.5,220.1h-29.9L4.7,426.9h30.5l69.1,188.4h.9l68.8-188.4h29.9ZM265.3,481.1c45.9,0,76.8,33.3,76.8,84.8s-30.8,84.8-76.8,84.8-76.8-33.3-76.8-84.8,30.8-84.8,76.8-84.8ZM265.3,629.4c30.2,0,50.3-23.7,50.3-63.5s-20-63.2-50.3-63.2-50.6,23.7-50.6,63.2,20.3,63.5,50.6,63.5ZM363.6,423.8h25.6v223.2h-25.6v-223.2ZM477.9,625.1c4.6,0,12.3,0,16.3-.3v22.5c-4,.3-13.3.6-21.3.6-29,0-40.7-7.4-40.7-35.8v-107.3h-26.8v-20h26.8v-46.6h25.9v46.6h37.6v20h-37.6v100.8c0,16,5.2,19.4,19.7,19.4ZM656.9,647l-57.7-89.1h-56.7v89.1h-27.7v-220.1h99c47.2,0,73.4,25,73.4,65.7s-20,58.9-56.7,64.1l59.2,90.3h-32.7ZM542.5,534.5h67.5c31.4,0,48.7-14.2,48.7-41.9s-17.3-41.9-48.7-41.9h-67.5v83.9Z"/>
+  <g class="cls-1">
+    <g>
+      <path class="cls-3" d="M58.2,7.1h174.1l165.3,350.4h-176.5L58.2,7.1Z"/>
+      <path class="cls-4" d="M403.9,7.1h174.7l-81,174.3h-174.7L403.9,7.1Z"/>
+    </g>
+  </g>
+</svg>
